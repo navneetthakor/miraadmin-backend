@@ -1,0 +1,19 @@
+{
+  "name": "miraadmin-backend",
+  "version": "1.0.0",
+  "description": "this is backend used for mira-admin and my used for igadget-backend as well if all goes well",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "miraadmin-backend"
+  },
+  "author": "Navneet Kumar",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  }
+}
