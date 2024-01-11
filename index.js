@@ -24,8 +24,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
+
 // --------------------------- Routing setup -------------------------------
-app.get('/',(req,res)=> res.json({"signal": "green"}));
+// importing routes files 
+const paymentRoutes = require("./routes/payments.js");
+
+// placing middlewares 
+app.use('/payments', paymentRoutes);
+
+// default routes 
+app.get('/', (req,res) => res.json({"signal": "green"}));
+
 
 
 // -------------------------- Starting backend -----------------------------
