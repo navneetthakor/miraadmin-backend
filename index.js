@@ -3,7 +3,7 @@ const connectToMongo = require("./db.js");
 connectToMongo();
 
 
-// ------------------ dotenv setup ----------------------------------------
+// ------------------ dotenv setup (to use environment variables) ---------
 const setupDotEnv = require("./setupenv.js");
 setupDotEnv();
 
