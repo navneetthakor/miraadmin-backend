@@ -8,7 +8,7 @@ const ProductSchema = new Schema({
       required: true,
     },
   ],
-  name: {
+  title: {
     type: String,
     required: true,
   },
@@ -20,35 +20,39 @@ const ProductSchema = new Schema({
     type: String,
     require: true,
   },
-  modal: {
+  dimension:{
     type: String,
     require: true,
   },
-  height: {
-    type: String,
-    require: true,
-  },
-  width: {
-    type: String,
-    require: true,
-  },
-
-  dummyPrice: {
+  weight: {
     type: Number,
+    require:true,
   },
-  price: {
+  mrp: {
     type: Number,
     require: true,
   },
-  color:[
-    {
-        type: String,
-        required: true
-    }
-  ],
+  sellprice: {
+    type: Number,
+    require: true,
+  },
   category: {
     type: String,
     required: true
+  },
+  sku:{
+    type: String,
+    require: true,
+    unique: true,
+  },
+  inventory: {
+    type: Number,
+    require: true
+  },
+  soldqnt:{
+    type: Number,
+    require: true,
+    default: 0,
   },
   date: {
     type: Date,
@@ -61,13 +65,16 @@ module.exports = model("Products", ProductSchema);
 
 // products = {
 //     images,
-//     name,
+//     title,
 //     desc,
-//     height,
-//     width,
-//     dummyPrice,
-//     price,
-//     color,
+//     company,
+//     dimension,
+//     weight,
+//     mrp,
+//     sellprice,
+//     inventory,
+//     soldqnt,
 //     category,
+//     sku,
 //     date,
 // }

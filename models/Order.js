@@ -2,10 +2,16 @@ const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
 const OrderSchema = new Schema({
-    product_ids: [
+    products: [
         {
-            type: mongoose.Types.ObjectId,
-            required: true
+            product_Ids: {
+                type: mongoose.Types.ObjectId,
+                required: true
+            },
+            quantity:{
+                type: Number,
+                require: true
+            }
         }
     ],
     customer_id: {
@@ -18,7 +24,8 @@ const OrderSchema = new Schema({
     },
     status: {
         type: String,
-        required: true
+        required: true,
+        default: "confirm"
     },
     address: {
         street: {

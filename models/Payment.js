@@ -4,7 +4,9 @@ const { Schema, model } = mongoose;
 const PaymentSchema = new Schema({
     order_id: {
         type: mongoose.Types.ObjectId,
-        required: true
+        // first payment will be perform so at that moment orderf_id will not be available
+        // once order is confirm will provide a way to add order_id  
+        // required: true
     },
     customer_id: {
         type: mongoose.Types.ObjectId,
