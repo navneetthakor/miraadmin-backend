@@ -7,7 +7,7 @@ const {body, validationResult } = require('express-validator');
 
 //importing the model of admin
 // as it only one who can provide the connectivity with the admin collection in mongoDB
-const Admin = require('../model/Admin');
+const Admin = require('../models/Admin');
 
 // to encrypt the password 
 const bcrypt = require('bcryptjs');
@@ -17,10 +17,11 @@ const jwt = require('jsonwebtoken');
 
 // importing fetchAdmin middleware
 // will use it in '/getAdmin' end point
-const fetchAdmin = require('../middleware/fetchAdmin');
+const fetchAdmin = require('../middlewares/fetchAdmin');
 
-
+// (~~~~~~~~~~~~~~~~~~~ images setup left ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)
 // --------------------------------ROUTE:1 admin signup -----------------------------------
+router.post('/',(req,res) => {res.json({"signal": "yellow"})});
 router.post('/createadmin',
 [
     body('name', "Please enter name ").not().isEmpty(),
@@ -49,7 +50,8 @@ async (req,res)=>{
     Admin.create({
         name: req.body.name,
         email: req.body.email,
-        password: securepas
+        password: securepas,
+        mobile: req.body.mobile ? req.body.mobile : "",
     })
 
     //jsonwebtoken related
