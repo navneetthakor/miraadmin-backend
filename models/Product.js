@@ -45,11 +45,11 @@ const ProductSchema = new Schema({
     require: true,
     unique: true,
   },
-  inventory: {
+  stock: {
     type: Number,
     require: true
   },
-  soldqnt:{
+  soldstock:{
     type: Number,
     require: true,
     default: 0,
@@ -72,8 +72,8 @@ module.exports = model("Products", ProductSchema);
 //     weight,
 //     mrp,
 //     sellprice,
-//     inventory,
-//     soldqnt,
+//     stock,
+//     soldstock,
 //     category,
 //     sku,
 //     date,

@@ -59,15 +59,16 @@ router.post(
          temp = new Product({
           images: imagePaths,
           title: req.body.title,
-          description: req.body.description,
+          desc: req.body.description,
           company: req.body.company,
-          model: req.body.model,
-          height: req.body.height,
-          width: req.body.width,
-          dummyPrice: req.body.dummyPrice,
-          price: req.body.price,
-          totrating: req.body.totrating,
-          prodname: req.body.prodname
+          dimension: req.body.dimension,
+          weight: req.body.weight,
+          mrp: req.body.mrp,
+          sellprice: req.body.sellprice,
+          category: req.body.category,
+          sku: req.body.sku,
+          stock: req.body.prodname,
+          soldstock: req.body.prodname
         });
       }
       temp.save();
@@ -215,7 +216,7 @@ async(req,res)=>{
 })
 
 
-// ----------------------ROUT:6 fetch all but pertucal named products----------------
+// ----------------------ROUT:6 fetch all but particular category products----------------
 router.post('/fetchnamedprods', 
 async (req,res)=>{
 
