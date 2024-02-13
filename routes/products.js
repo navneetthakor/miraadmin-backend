@@ -6,19 +6,17 @@ const router = express.Router();
 const { body, validationResult } = require("express-validator");
 
 // to get connectivity with collection of product in backend using mongooes
-const Product = require("../model/Product");
+const Product = require("../models/Product");
 
 //for admin authentication
-const Admin = require("../model/Admin");
+const Admin = require("../models/Admin");
 
 // to upload images
-const upload = require("../middleware/fetchImages");
+const upload = require("../middlewares/fetchImages");
 
 // importing fetchAdmin middleware
 // will use it in '/getAdmin' end point
-const fetchAdmin = require("../middleware/fetchAdmin");
-const { sign } = require("jsonwebtoken");
-const { model } = require("mongoose");
+const fetchAdmin = require("../middlewares/fetchAdmin");
 
 // -------------------------ROUTE:1 to add product -------------------------------------
 router.post(
@@ -27,9 +25,9 @@ router.post(
   fetchAdmin,
   [
     body("title", "please enter tiltle with min length of : 6").isLength({min: 6}),
-    body("description", "please enter valid descretion format").not().isEmpty(),
+    body("desc", "please enter valid descretion format").not().isEmpty(),
     body("category", "please enter valid descretion format").not().isEmpty(),
-    body("price", "please enter valid price.").isNumeric(),
+    body("sellprice", "please enter valid price.").isNumeric(),
   ],
   async (req, res) => {
     try {
@@ -59,7 +57,7 @@ router.post(
          temp = new Product({
           images: imagePaths,
           title: req.body.title,
-          desc: req.body.description,
+          desc: req.body.desc,
           company: req.body.company,
           dimension: req.body.dimension,
           weight: req.body.weight,
@@ -79,7 +77,7 @@ router.post(
   }
 );
 
-// -------------------------ROUTE:2 to delete product -------------------------------------
+// -------------------------ROUTE:2 to delete product (byID) -------------------------------------
 router.delete("/deleteprod/:id", fetchAdmin, async (req, res) => {
   try {
     // first of all check whether this request is made by admin or not
@@ -127,21 +125,31 @@ router.put("/updateprod/:id", fetchAdmin, async (req, res) => {
     }
 
     // creating a temporory product to store parameters provided in request
-    const { title, description, dummyPrice, price, category, company, model, width, height } =
-      req.body;
+    const {
+      title,
+      desc,
+      company,
+      dimension,
+      weight,
+      mrp,
+      sellprice,
+      category,
+      sku,
+      stock,
+      soldstock} = req.body;
     const prod = {};
 
     if (title) {
       prod.title = title;
     }
-    if (description) {
-      prod.description = description;
+    if (desc) {
+      prod.desc = desc;
     }
-    if (dummyPrice) {
-      prod.dummyPrice = dummyPrice;
+    if (dimension) {
+      prod.dimension = dimension;
     }
-    if (price) {
-      prod.price = price;
+    if (mrp) {
+      prod.mrp = mrp;
     }
     if (category) {
       prod.category = totrating;
@@ -149,14 +157,20 @@ router.put("/updateprod/:id", fetchAdmin, async (req, res) => {
     if (company) {
       prod.company = company;
     }
-    if (model) {
-      prod.model = model;
+    if (sellprice) {
+      prod.sellprice = sellprice;
     }
-    if (width) {
-      prod.width = width;
+    if (sku) {
+      prod.sku = sku;
     }
-    if (height) {
-      prod.height = height;
+    if (weight) {
+      prod.weight = weight;
+    }
+    if (stock) {
+      prod.stock = stock;
+    }
+    if (soldstock) {
+      prod.soldstock = soldstock;
     }
 
     // find product to be update
@@ -198,16 +212,15 @@ async(req,res)=>{
 
   try{
     // this are the parameters that will be provided in req
-    const {page=1, pageSize=6, prodname='watch'} = req.query;
+    const {page=1, pageSize=6, category='watch'} = req.query;
     const skip = (page-1)*pageSize;
 
-    const prods = await Product.find({prodname:prodname})
+    const prods = await Product.find({category:category})
     .skip(skip) //to skip the data that already fetched
     .limit(pageSize) // to send limited data
     .exec();
 
-    res.json(prods);
-
+    res.json({products: prods, signal: "green"});
   }
   catch(e){
     console.log(e);
@@ -217,14 +230,13 @@ async(req,res)=>{
 
 
 // ----------------------ROUT:6 fetch all but particular category products----------------
-router.post('/fetchnamedprods', 
+router.post('/fetchcategoryprods', 
 async (req,res)=>{
 
   try {
-    const {prodname= 'laptop'} = req.query;
+    const {category= 'laptop'} = req.query;
 
-    const prods = await Product.find({prodname: prodname})
-    // console.log(prods);
+    const prods = await Product.find({category: category})
 
     res.json(prods);
   } catch (e) {

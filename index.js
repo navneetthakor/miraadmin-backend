@@ -29,10 +29,12 @@ app.use(express.urlencoded({ extended: true }));
 // importing routes files 
 const paymentRoutes = require("./routes/payments.js");
 const adminRoutes = require("./routes/admin.js");
+const productRoutes = require("./routes/products.js");
 
 // placing middlewares 
 app.use('/payments', paymentRoutes);
 app.use('/admin',adminRoutes);
+app.use('/product',productRoutes);
 
 // default routes 
 app.get('/', (req,res) => res.json({"signal": "green"}));
