@@ -18,6 +18,11 @@ const upload = require("../middlewares/fetchImages");
 // will use it in '/getAdmin' end point
 const fetchAdmin = require("../middlewares/fetchAdmin");
 
+// to delete images
+// used in update Product route 
+const fs = require('fs');
+const path = require('path');
+
 // -------------------------ROUTE:1 to add product -------------------------------------
 router.post(
   "/addprod",
@@ -72,6 +77,7 @@ router.post(
       temp.save();
       return res.json({ product: temp, signal: "green" });
     } catch (e) {
+      console.log(e);
       res.status(500).json({ email: "Internal server error", signal: "red" });
     }
   }
@@ -93,7 +99,7 @@ router.delete("/deleteprod/:id", fetchAdmin, async (req, res) => {
     }
 
     //finding product with provided id
-    const prod = Product.findById(req.params.id);
+    const prod = await Product.findById(req.params.id);
     if (!prod) {
       return res
         .status(400)
@@ -102,15 +108,26 @@ router.delete("/deleteprod/:id", fetchAdmin, async (req, res) => {
 
     // admin autheticated and product exist in backend
     // so all safe now delete the product
+
+    // first delete images 
+      for(let imageName of prod.images){
+        const imagePath = path.join(__dirname,'..', imageName);
+        fs.unlinkSync(imagePath);
+      }
+    
     await Product.findByIdAndDelete(req.params.id);
     return res.json({ signal: "green" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ email: "Internal server error", signal: "red" });
   }
 });
 
 // -------------------------ROUTE:3 to update product -------------------------------------
-router.put("/updateprod/:id", fetchAdmin, async (req, res) => {
+router.put("/updateprod/:id",
+fetchAdmin, 
+upload.array('images'),
+async (req, res) => {
   try {
     // first of all check whether this request is made by admin or not
     // fetching the id provided by fetchAdmin middleware
@@ -119,9 +136,34 @@ router.put("/updateprod/:id", fetchAdmin, async (req, res) => {
     // gethering the details of admin with provided id
     const admin = await Admin.findById(adminId);
     if (!admin) {
+      // first delete uploaded images 
+      if (req.files && req.files.length > 0) {
+        for(let imageName of req.files){
+          console.log(imageName);
+          const imagePath = path.join(__dirname,'..', imageName);
+          fs.unlinkSync(imagePath);
+        }
+      }
+
       return res
         .status(401)
         .json({ error: "Authentication fail please login", signal: "red" });
+    }
+
+    // find product to be update
+    const findProd = await Product.findById(req.params.id);
+    if (!findProd) {
+      // first delete uploaded images 
+      if (req.files && req.files.length > 0) {
+        for(let image of req.files){
+          const imagePath = path.join(__dirname,'..', image.path);
+          fs.unlinkSync(imagePath);
+        }
+      }
+
+      return res
+        .status(400)
+        .json({ error: "product not exist", signal: "red" });
     }
 
     // creating a temporory product to store parameters provided in request
@@ -136,7 +178,8 @@ router.put("/updateprod/:id", fetchAdmin, async (req, res) => {
       category,
       sku,
       stock,
-      soldstock} = req.body;
+      soldstock,
+    delImages} = req.body;
     const prod = {};
 
     if (title) {
@@ -173,12 +216,23 @@ router.put("/updateprod/:id", fetchAdmin, async (req, res) => {
       prod.soldstock = soldstock;
     }
 
-    // find product to be update
-    const findProd = Product.findById(req.params.id);
-    if (!findProd) {
-      return res
-        .status(400)
-        .json({ error: "product not exist", signal: "red" });
+    // Check if files were uploaded
+    if (req.files && req.files.length > 0) {
+      prod.images = req.files.map((file) => file.path);
+    }
+    
+    // deleting images from backend
+    if(delImages){
+      for(let imageName of delImages){
+        const imagePath = path.join(__dirname,'..', imageName);
+        fs.unlinkSync(imagePath);
+        findProd.images = findProd.images?.filter((img) => {return img !== imageName});
+      }
+    }
+
+    // add remaining images of old product to new one 
+    if(findProd.images){
+      prod.images = findProd.images.concat(prod.images);
     }
 
     // now all safe to update the product
@@ -189,6 +243,7 @@ router.put("/updateprod/:id", fetchAdmin, async (req, res) => {
     );
     res.json({ product: updatProd, signal: "green" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ email: "Internal server error", signal: "red" });
   }
 });
