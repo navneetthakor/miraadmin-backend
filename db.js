@@ -1,7 +1,3 @@
-// ----------- setup for environment variables ------------
-const setupDotEnv = require("./setupenv.js");
-setupDotEnv();
-
 // ---------- importing required modules ----------------
 const mongoose = require("mongoose");
 const mongoURI = process.env.MONGO_URI;

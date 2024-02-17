@@ -3,11 +3,11 @@ const express = require('express');
 const router = express.Router();
 
 // to validate the given parameter in request 
-const {body, validationResult, check } = require('express-validator');
+const {body, validationResult } = require('express-validator');
 
-// to get connectivity with collection of user in database
+// to get connectivity with collection of custmr in database
 // it is model which we created previously 
-const User = require('../model/User');
+const Customer = require('../models/Customer');
 
 // to provide authtoken (for digital signature) 
 const jwt = require('jsonwebtoken');
@@ -15,16 +15,19 @@ const jwt = require('jsonwebtoken');
 // to encrypt the password 
 const bcrypt = require('bcryptjs');
 
-//fetchUser middleware to fetch data from auth-token
-const fecthUser = require('../middleware/fetchUser');
-const fetchAdmin = require('../middleware/fetchUser');
+//fetchCustomer middleware to fetch data from auth-token
+const fecthCustomer = require('../middlewares/fetchCustomer');
+const fetchAdmin = require('../middlewares/fetchAdmin');
 
 // to use admin modal 
-const Admin = require('../model/Admin');
+const Admin = require('../models/Admin');
 
+// to upload images 
+const upload = require('../middlewares/fetchImages');
 
-// --------------------------ROUTE:1 create user account ----------------------------------------------------------
-router.post('/createuser',
+// --------------------------ROUTE:1 create custmr account ----------------------------------------------------------
+router.post('/createcustmr',
+upload.single('image'),
 [
     body("name", "please enter name").not().isEmpty(),
     body("email", "please enter valid email").isEmail(),
@@ -39,33 +42,36 @@ async (req,res)=>{
         return res.status(400).json({error: err.array(), signal: "red"})
     }
 
-    // check wheteher any user exists with provided email or not 
-    let user = await User.findOne({email: req.body.email});
-    if(user){
-        return res.status(400).json({error: "user with given email already exists", signal: "red"});
+    // check wheteher any custmr exists with provided email or not 
+    let custmr = await Customer.findOne({email: req.body.email});
+    if(custmr){
+        return res.status(400).json({error: "custmr with given email already exists", signal: "red"});
     }
 
     // encrypt the password using bcrypt
     const salt = await bcrypt.genSaltSync(10);
     const securePas = await bcrypt.hashSync(req.body.password, salt);
 
-    // creating and saving user in backend 
-    User.create({
+    // creating and saving custmr in backend 
+    const temp = new Customer({
+        image: req.file ? req.file.path : "",
         name: req.body.name,
         email: req.body.email,
-        password: securePas
+        password: securePas,
+        mobile: req.mobile? req.mobile : ""
     })
+    temp.save();
 
     // jsonwebtoken related 
-    // to provide authentication token back to user 
+    // to provide authentication token back to custmr 
     const data = {
-        user: {
-            id: User.id,
+        custmr: {
+            id: temp.id,
         }
     }
     const jwt_secret = "tonystarkismyrolemodel";
-    const authtoken = jwt.sign(data,jwt_secret);
-    return res.json({authtoken: authtoken, signal: "green"});
+    const custmrtoken = jwt.sign(data,jwt_secret);
+    return res.json({custmrtoken: custmrtoken, signal: "green"});
 
     }catch(e){
         console.log(e);
@@ -88,14 +94,14 @@ async (req,res)=>{
         return res.status(400).json({error: err.array(), signal: "red"});
     }
 
-    // check wheter any user exists with given email or not 
-    const user = await User.findOne({email: req.body.email});
-    if(!user){
+    // check wheter any custmr exists with given email or not 
+    const custmr = await Customer.findOne({email: req.body.email});
+    if(!custmr){
         return res.status(400).json({error: "enter valid credentials", signal: "red"});
     }
 
     // check whether the password provided is correct or not 
-    const passCompare = await bcrypt.compare(req.body.password, user.password);
+    const passCompare = await bcrypt.compare(req.body.password, custmr.password);
     if(!passCompare){
         return res.status(400).json({error: "enter valid credentials", signal: "red"});
     }
@@ -103,8 +109,8 @@ async (req,res)=>{
     // we reach here means all details are correct 
     // so prepare authtoken to provide it back 
     const data = {
-        user: {
-            id: user.id
+        custmr: {
+            id: custmr.id
         }
     }
     const jwt_secret = "tonystarkismyrolemodel";
@@ -119,19 +125,19 @@ async (req,res)=>{
 
 
 // --------------------------ROUTE:3 login to accoutn with authtoken ( previous login not require) ----------------------------------------------------------
-router.post('/getuser', fecthUser ,async (req,res)=>{
+router.post('/getcustmr', fecthCustomer ,async (req,res)=>{
 
     try {
 
-        // fetching the id provided by fetchUser middleware 
-        userId = req.user.id;
+        // fetching the id provided by fetchCustomer middleware 
+        custmrId = req.custmr.id;
 
-        // gethering the details of user with provided id 
-        const user = await User.findById(userId).select("-password");
-        if(!user){
+        // gethering the details of custmr with provided id 
+        const custmr = await Customer.findById(custmrId).select("-password");
+        if(!custmr){
            return res.status(401).json({error: "Authentication fail please login", signal: 'red'});
         }
-        return res.json({user:user, signal: 'green'});
+        return res.json({custmr:custmr, signal: 'green'});
 
     } catch (error) {
         console.log(error);
@@ -140,19 +146,19 @@ router.post('/getuser', fecthUser ,async (req,res)=>{
  })
 
 
-//  ----------------------------- Route:4 fetchall Users (only for admin) ---------------
-router.post('/getallcustomers', async (req,res)=>{
+//  ----------------------------- Route:4 fetchall Customers (only for admin) ---------------
+router.post('/getallcustomers',fetchAdmin ,async (req,res)=>{
 
     try{
         // extracting admin-id privided by fetchAdmin 
-        // const adminId = req.admin.id;
+        const adminId = req.admin.id;
     
         // check whether such admin exsists or not 
-        // const admin = await Admin.findById(adminId);
-        // if(!admin) res.status(400).json({message: "You are not admin", signal: "red"});
+        const admin = await Admin.findById(adminId);
+        if(!admin) res.status(400).json({message: "You are not admin", signal: "red"});
     
         // now fetch all customers and send them to front-end 
-        const customers = await User.find();
+        const customers = await Customer.find();
         res.json(customers);
         // res.json({customers: customers, signal: "green"});
     }
