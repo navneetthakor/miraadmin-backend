@@ -49,7 +49,6 @@ async (req,res)=>{
     if(admin){
         // delete uploaded image 
         if(req.file) fs.unlinkSync(path.join(__dirname,'..', req.file.path));
-
         return res.status(400).json({error: "Admin with the same email already exists", signal: 'red'});
     }
 
