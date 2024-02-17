@@ -27,6 +27,7 @@ const upload = require('../middlewares/fetchImages');
 
 // to delete image 
 const fs = require('fs');
+const path = require('path');
 
 // --------------------------ROUTE:1 create custmr account ----------------------------------------------------------
 router.post('/createcustmr',
@@ -42,12 +43,16 @@ async (req,res)=>{
     // checking the given parameters 
     const err =  validationResult(req);
     if(!err.isEmpty()){
+        // delete uploaded file 
+        if(req.file) fs.unlinkSync(path.join(__dirname,'..', req.file.path));
         return res.status(400).json({error: err.array(), signal: "red"})
     }
 
     // check wheteher any custmr exists with provided email or not 
     let custmr = await Customer.findOne({email: req.body.email});
     if(custmr){
+        // delete uploaded file 
+        if(req.file) fs.unlinkSync(path.join(__dirname,'..', req.file.path));
         return res.status(400).json({error: "custmr with given email already exists", signal: "red"});
     }
 
@@ -80,8 +85,7 @@ async (req,res)=>{
         console.log(e);
 
         // delete uploaded file 
-        if(req.file) fs.unlinkSync(req.file.path);
-        
+        if(req.file) fs.unlinkSync(path.join(__dirname,'..', req.file.path));
         res.status(500).json({email: "some error occured", signal: 'red'});
     }
 })
@@ -166,7 +170,9 @@ async (req,res) => {
         // find customer 
         const custmr = await Customer.findById(custmrId);
         if(!custmr){
-            res.status(401).json({message: "Please login with valid credentials", signal: "red"});
+            // delete uploaded image 
+            if(req.file) fs.unlinkSync(path.join(__dirname,'..', req.file.path));
+            return res.status(401).json({message: "Please login with valid credentials", signal: "red"});
         }
         
         // now customer exists
@@ -181,7 +187,7 @@ async (req,res) => {
         };
         
         // delete old image if new image is being provided 
-        if(req.file && custmr.image!=="") fs.unlinkSync(custmr.image);
+        if(req.file && custmr.image!=="") fs.unlinkSync(path.join(__dirname,'..', custmr.image));
         
         // now update profile 
         const updtCustmr = await Customer.findByIdAndUpdate(
@@ -191,15 +197,13 @@ async (req,res) => {
         )
             
         // return updated profile 
-        res.json({custmr: updtCustmr, signal:"green"});
+        return  res.json({custmr: updtCustmr, signal:"green"});
     }
     catch(e){
         console.log(e);
-
         // delete uploaded image 
-        if(req.file) fs.unlinkSync(req.file.path);
-
-        res.status(500).json({message: "internal error occured", signal: "red"});
+        if(req.file) fs.unlinkSync(path.join(__dirname,'..', req.file.path));
+        return res.status(500).json({message: "internal error occured", signal: "red"});
     }
 })
 

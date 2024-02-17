@@ -19,26 +19,37 @@ const jwt = require('jsonwebtoken');
 // will use it in '/getAdmin' end point
 const fetchAdmin = require('../middlewares/fetchAdmin');
 
-// (~~~~~~~~~~~~~~~~~~~ images setup left ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~)
+// to upload profile image 
+const upload = require('../middlewares/fetchImages');
+
+// to delete image from disk storage 
+const fs = require('fs');
+const path = require('fs');
+
 // --------------------------------ROUTE:1 admin signup -----------------------------------
-router.post('/',(req,res) => {res.json({"signal": "yellow"})});
 router.post('/createadmin',
 [
     body('name', "Please enter name ").not().isEmpty(),
     body('email', "enter a valid email").isEmail(),
     body('password', "please enter password with length more then 6 ").isLength({min:6})
 ],
+upload.single('image'),
 async (req,res)=>{
     try {
     //cheking the validation satisfaction that we have specified above
     const err = validationResult(req);
     if(!err.isEmpty()){
+        // delete uploaded image 
+        if(req.file) fs.unlinkSync(path.join(__dirname,'..', req.file.path));
         return res.status(400).json({error: err.array(), signal: 'red'});
     }
 
     //cheking whether any admin exists with the same email
     const admin = await Admin.findOne({email: req.body.email});
     if(admin){
+        // delete uploaded image 
+        if(req.file) fs.unlinkSync(path.join(__dirname,'..', req.file.path));
+
         return res.status(400).json({error: "Admin with the same email already exists", signal: 'red'});
     }
 
@@ -48,6 +59,7 @@ async (req,res)=>{
 
     // creating the Admin for mongoose schema (it will add new this details in database directly.)
     Admin.create({
+        image: req.file? req.file.path: "",
         name: req.body.name,
         email: req.body.email,
         password: securepas,
@@ -66,6 +78,9 @@ async (req,res)=>{
 
     }catch(e){
         console.log(error);
+        
+        // delete uploaded image 
+        if(req.file) fs.unlinkSync(path.join(__dirname,'..', req.file.path));
         res.status(500).json({email: "some error occured", signal: 'red'});
     }
 
