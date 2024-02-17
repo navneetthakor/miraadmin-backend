@@ -16,7 +16,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 //fetchCustomer middleware to fetch data from auth-token
-const fecthCustomer = require('../middlewares/fetchCustomer');
+const fetchCustomer = require('../middlewares/fetchCustomer');
 const fetchAdmin = require('../middlewares/fetchAdmin');
 
 // to use admin modal 
@@ -24,6 +24,9 @@ const Admin = require('../models/Admin');
 
 // to upload images 
 const upload = require('../middlewares/fetchImages');
+
+// to delete image 
+const fs = require('fs');
 
 // --------------------------ROUTE:1 create custmr account ----------------------------------------------------------
 router.post('/createcustmr',
@@ -75,6 +78,10 @@ async (req,res)=>{
 
     }catch(e){
         console.log(e);
+
+        // delete uploaded file 
+        if(req.file) fs.unlinkSync(req.file.path);
+        
         res.status(500).json({email: "some error occured", signal: 'red'});
     }
 })
@@ -125,7 +132,7 @@ async (req,res)=>{
 
 
 // --------------------------ROUTE:3 login to accoutn with authtoken ( previous login not require) ----------------------------------------------------------
-router.post('/getcustmr', fecthCustomer ,async (req,res)=>{
+router.post('/getcustmr', fetchCustomer ,async (req,res)=>{
 
     try {
 
@@ -146,7 +153,57 @@ router.post('/getcustmr', fecthCustomer ,async (req,res)=>{
  })
 
 
-//  ----------------------------- Route:4 fetchall Customers (only for admin) ---------------
+//  --------------------------Route:4 to update profile (login required) --------------------------
+router.put('/updatecustmr',
+fetchCustomer,
+upload.single('image'),
+async (req,res) => {
+    try{
+
+        // find id of custmr
+        const custmrId = req.custmr.id;
+        
+        // find customer 
+        const custmr = await Customer.findById(custmrId);
+        if(!custmr){
+            res.status(401).json({message: "Please login with valid credentials", signal: "red"});
+        }
+        
+        // now customer exists
+        // get all the fields which are suppose to update 
+        const {name, mobile} = req.query;
+        
+        // create object to hold values 
+        const newCustmr = {
+            image: req.file ? req.file.path : custmr.image,
+            name: name ? name : custmr.name,
+            mobile: mobile ? mobile : custmr.mobile
+        };
+        
+        // delete old image if new image is being provided 
+        if(req.file && custmr.image!=="") fs.unlinkSync(custmr.image);
+        
+        // now update profile 
+        const updtCustmr = await Customer.findByIdAndUpdate(
+            custmrId,
+            {$set : newCustmr},
+            {new :  true}
+        )
+            
+        // return updated profile 
+        res.json({custmr: updtCustmr, signal:"green"});
+    }
+    catch(e){
+        console.log(e);
+
+        // delete uploaded image 
+        if(req.file) fs.unlinkSync(req.file.path);
+
+        res.status(500).json({message: "internal error occured", signal: "red"});
+    }
+})
+
+//  ----------------------------- Route:5 fetchall Customers (only for admin) ---------------
 router.post('/getallcustomers',fetchAdmin ,async (req,res)=>{
 
     try{
