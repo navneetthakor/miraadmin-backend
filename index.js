@@ -32,12 +32,14 @@ const paymentRoutes = require("./routes/payments.js");
 const adminRoutes = require("./routes/admin.js");
 const productRoutes = require("./routes/products.js");
 const customerRoutes = require("./routes/customer.js");
+const cartRoutes = require("./routes/cart.js");
 
 // placing middlewares 
 app.use('/payments', paymentRoutes);
 app.use('/admin',adminRoutes);
 app.use('/product',productRoutes);
 app.use('/customer',customerRoutes);
+app.use('/cart',cartRoutes);
 
 // default routes 
 app.get('/', (req,res) => res.json({"signal": "green"}));

@@ -8,7 +8,7 @@ const CartSchema = new Schema({
     },
     cart_prods: [
         {
-            id: {
+            product_id: {
                 type: mongoose.Types.ObjectId,
                 required: true
             },
@@ -20,7 +20,7 @@ const CartSchema = new Schema({
     ],
     fav_prods: [
         {
-            id: {
+            product_id: {
                 type: mongoose.Types.ObjectId,
                 required: true
             },
