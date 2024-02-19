@@ -10,7 +10,8 @@ const RatingSchema = new Schema({
     {
         customer_id:{
             type: mongoose.Types.ObjectId,
-            required: true
+            required: true,
+            unique: true // one customer can write only one review for each product at most
         },
         rate: {
             type: Number,
