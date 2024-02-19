@@ -62,3 +62,8 @@ router.post('/getCart',
 getCart);
 
 module.exports = router;
+
+
+// ************Issue**************
+// cart creates new entry for every new request instead of merging quantity with entry 
+// (if already that product exists in cart then it's valid point)
