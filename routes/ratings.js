@@ -10,7 +10,7 @@ const createRating = require('../controllers/Rating/createRating.js');
 const addReview = require('../controllers/Rating/addReview.js');
 const updateReview = require('../controllers/Rating/updateReview.js');
 const deleteRating = require('../controllers/Rating/deleteRating.js');
-
+const getRating = require('../controllers/Rating/getRating.js')
 // ----------------Route:1 (create Rating document - when product is added)----------------
 router.post('/createRating',
 [
@@ -44,5 +44,12 @@ router.delete('/deleteRating',
     body("product_id", "please enter valid product id").not().isEmpty()
 ],
 deleteRating);
+
+// ---------------Route:5 (to get rating document)--------------
+router.post('/getRating',
+[
+    body("product_id", "please enter valid product id").not().isEmpty()
+],
+getRating);
 
 module.exports = router;
