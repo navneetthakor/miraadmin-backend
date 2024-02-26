@@ -12,24 +12,29 @@ const PaymentSchema = new Schema({
         type: mongoose.Types.ObjectId,
         required: true
     },
-    tot_payment: {
+    amount: {
         type: Number,
+        required: true
+    },
+    payment_intent_id: {
+        type: String,
+    },
+    method: {
+        type: String,
+        required: true
+    },
+    status:{
+        type: String,
+        required: true,
+    },
+    country: {
+        type: String,
         required: true
     },
     date: {
         type: Date,
         required: true,
         default: Date.now()
-    },
-    month: { //month component is left
-        type: Number,
-        required: true,
-        default: Date().getMonth() + 1
-    },
-    year: {
-        type: Number,
-        required: true,
-        default: Date().getFullYear()
     }
 })
 
