@@ -16,12 +16,10 @@ const updatePayment = async (req,res) =>{
         }
         
         // check wheter admin exists or not 
-        const adminId = req.admin.id;
-        const admin = await Admin.findById(adminId);
-        if(!admin){
-            return res(401).json({error: "please enter valid credentials", signal: "red"})
-        }
-        // destructure fields sent in body of request 
+        // ----------this part is remaining 
+
+
+        // destructuring request body 
         const {order_id, paymentIntentObject, payment_id} = req.body;
         const newPayment = {}
         
@@ -41,7 +39,7 @@ const updatePayment = async (req,res) =>{
             return res.json({payment: ans, signal: "green"});
         }catch(e){
             console.log(e);
-            return res.status(500).json({error: "internla server error", signal: "red"});
+            return res.status(500).json({error: "internal server error", signal: "red"});
         }   
 }
 

@@ -4,7 +4,7 @@ const { Schema, model } = mongoose;
 const OrderSchema = new Schema({
     products: [
         {
-            product_Ids: {
+            product_Id: {
                 type: mongoose.Types.ObjectId,
                 required: true
             },
@@ -45,7 +45,7 @@ const OrderSchema = new Schema({
             required: true
         },
         pincode: {
-            type: Number,
+            type: String,
             required: true
         }
     },

@@ -29,7 +29,6 @@ createPayment)
 // ------------ROUTE:2 (update payment details)------------
 // ---Admin will perform this operation 
 router.put('/updatePayment',
-fetchAdmin,
 [
     body("payment_id", "please provide valid payment id").not().isEmpty()
 ],
