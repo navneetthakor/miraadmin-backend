@@ -12,6 +12,7 @@ const fetchAdmin = require('../middlewares/fetchAdmin');
 const createOrder = require('../controllers/order/createOrder');
 const fetchAllOrders = require('../controllers/order/fetchAllOrders');
 const fetchCustomerOrders = require('../controllers/order/fetchCustomerOrders');
+const fetchSingleOrder = require('../controllers/order/fetchSingleOrder');
 
 // ------------ROUTE:1 (creating order )-----------------
 router.post('/createOrder',
@@ -30,11 +31,18 @@ router.post('/fetchAllOrders',
 fetchAdmin,
 fetchAllOrders);
 
-// ------ROUTE:3 (fetch single Order)-------------
+// ------ROUTE:3 (fetch CUSTOMER'S Order)-------------
 router.post('/fetchCustomerOrders',
 [
     body("customer_id","please provide customer_id").not().isEmpty()
 ],
 fetchCustomerOrders);
 
+// ----------ROUTE:4 (tech single order)----------
+// --not sure whether will use this route or not
+router.post('/fetchSingleOrder',
+[
+    body("order_id", "please provide order id").not().isEmpty()
+],
+fetchSingleOrder)
 module.exports = router;
