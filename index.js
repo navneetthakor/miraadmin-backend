@@ -36,7 +36,7 @@ const cartRoutes = require("./routes/cart.js");
 const ratingRoutes = require('./routes/ratings.js');
 
 // placing middlewares 
-app.use('/payments', paymentRoutes);
+app.use('/payment', paymentRoutes);
 app.use('/admin',adminRoutes);
 app.use('/product',productRoutes);
 app.use('/customer',customerRoutes);

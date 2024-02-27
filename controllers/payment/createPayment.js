@@ -1,5 +1,4 @@
 // to connect with collection 
-const { check } = require('express-validator');
 const Payment = require('../../models/Payment');
 
 // to check parameters provided in body 
@@ -32,6 +31,10 @@ const createPayment = async(req,res) => {
         }
         
         // else if payment is made thorough strip then 
+        if(!req.body.paymentIntentObj) {
+            return res.status(400).json({error:"Payment intent Object is not provided"});
+        }
+
         const payDetails = new Payment({
             customer_id: req.body.customer_id,
             amount: req.body.amount,

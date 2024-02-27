@@ -17,7 +17,7 @@ const fetchAllPayment = require('../controllers/payment/fetchAllPayment');
 
 
 // ----------------ROUTE:1 (create Payment, will be called at time of order creation)--------------
-router.post('/create',
+router.post('/createPayment',
 [
     body("customer_id", "provide valid customer id").not().isEmpty(),
     body("amount", "provide numeric amount value").isNumeric(),
@@ -28,7 +28,8 @@ createPayment)
 
 // ------------ROUTE:2 (update payment details)------------
 // ---Admin will perform this operation 
-router.post('/update',
+router.put('/updatePayment',
+fetchAdmin,
 [
     body("payment_id", "please provide valid payment id").not().isEmpty()
 ],
@@ -43,6 +44,7 @@ router.post('/fetchSinglePayment',
 fetchSinglePayment);
 
 // -------ROUTE:4 (fetch all payments)-------
+// ---Admin will perform this operation 
 router.post('/fetchAllPayment', fetchAdmin, fetchAllPayment);
 
 module.exports = router
