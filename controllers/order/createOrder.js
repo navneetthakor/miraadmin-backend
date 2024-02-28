@@ -67,6 +67,7 @@ const createOrder = async (req,res,) => {
         }
         
         // ---email to admin ---
+        // ---email to customer---
         return res.json({order: order, signal: "green"});
     }catch(e){
         console.log(e);
