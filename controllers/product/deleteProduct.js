@@ -7,8 +7,6 @@ const Rating = require('../../models/Rating');
 const fs = require('fs');
 const path = require('path');
 
-// to use end point api 
-const  axios = require('axios');
 
 const deleteProduct = async (req, res) => {
     try {
@@ -35,16 +33,19 @@ const deleteProduct = async (req, res) => {
       // admin autheticated and product exist in backend
       // so all safe now delete the product
   
-      // first delete images 
+      // first delete images
+      if(prod.images){
         for(let imageName of prod.images){
-            if(imageName !== null){
-                const imagePath = path.join(__dirname,'../..', imageName);
-                fs.unlinkSync(imagePath);
-            }
+          if(imageName !== null){
+            const imagePath = path.join(__dirname,'../..', imageName);
+            fs.unlinkSync(imagePath);
+          }
         }
+      } 
 
         // to delete it's rating document 
         const rating = await Rating.findOneAndDelete({product_id: req.params.id});
+        console.log(rating);
       
         // delete product 
       await Product.findByIdAndDelete(req.params.id);

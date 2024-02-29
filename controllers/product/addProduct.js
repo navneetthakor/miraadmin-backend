@@ -94,7 +94,7 @@ const addProduct = async (req, res) => {
       console.log(e);
     
     //   if images were uploaded then delete those images 
-    if(req.files.length > 0){
+    if(req.files){
         for(let i of req.files){
             fs.unlinkSync(path.join(__dirname,"../..",i.path));
         }
