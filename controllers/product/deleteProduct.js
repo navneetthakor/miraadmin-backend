@@ -45,10 +45,10 @@ const deleteProduct = async (req, res) => {
 
         // to delete it's rating document 
         const rating = await Rating.findOneAndDelete({product_id: req.params.id});
-        console.log(rating);
       
         // delete product 
       await Product.findByIdAndDelete(req.params.id);
+      // ------email to admin-------
       return res.json({ signal: "green" });
     } catch (error) {
       console.log(error);
