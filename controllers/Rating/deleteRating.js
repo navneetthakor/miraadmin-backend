@@ -23,6 +23,7 @@ const deleteRating = async(req,res) => {
             return res.status(400).json({error:"Rating document not exists", signal: "red"});
         }
 
+        console.log("ok");
         // all gone well 
         return res.json({rating:rating, signal: "green"});
     }catch(e){

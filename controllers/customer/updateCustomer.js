@@ -15,7 +15,7 @@ const updateCustomer = async (req,res) => {
         const custmr = await Customer.findById(custmrId);
         if(!custmr){
             // delete uploaded image 
-            if(req.file) fs.unlinkSync(path.join(__dirname,'..', req.file.path));
+            if(req.file) fs.unlinkSync(path.join(__dirname,'../..', req.file.path));
             return res.status(401).json({message: "Please login with valid credentials", signal: "red"});
         }
         
@@ -31,7 +31,7 @@ const updateCustomer = async (req,res) => {
         if(req.file) newCustmr.image = req.file.path;
         
         // delete old image if new image is being provided 
-        if(req.file && custmr.image!=="") fs.unlinkSync(path.join(__dirname,'..', custmr.image));
+        if(req.file && custmr.image!=="") fs.unlinkSync(path.join(__dirname,'../..', custmr.image));
         
         // now update profile 
         const updtCustmr = await Customer.findByIdAndUpdate(
@@ -46,7 +46,7 @@ const updateCustomer = async (req,res) => {
     catch(e){
         console.log(e);
         // delete uploaded image 
-        if(req.file) fs.unlinkSync(path.join(__dirname,'..', req.file.path));
+        if(req.file) fs.unlinkSync(path.join(__dirname,'../..', req.file.path));
         return res.status(500).json({message: "internal error occured", signal: "red"});
     }
 };
