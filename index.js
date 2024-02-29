@@ -55,3 +55,16 @@ app.get('/', (req,res) => res.json({"signal": "green"}));
 app.listen(port, () => {
     console.log("backend is listening at port no : ",port);
 })
+
+
+// backend completed on --(29/02/2024)-- (12:14 PM)--
+// still there are sum bugs in product routes 
+// 1. while tring to delete rating from product route using axios it gives error 
+//   -> for now i had directly introduced Rating collection in that route 
+// 2. while updating product it adds null to image array if image is not provided 
+
+// ------ still some task left -------
+// 1.email introduction left
+// 2.stripe part left
+// 3. password update 
+// 4. admin profile update 

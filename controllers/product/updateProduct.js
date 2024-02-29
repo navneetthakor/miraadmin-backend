@@ -19,7 +19,7 @@ const updateProducts = async (req, res) => {
         if (req.files && req.files.length > 0) {
           for(let imageName of req.files){
             console.log(imageName);
-            const imagePath = path.join(__dirname,'..', imageName);
+            const imagePath = path.join(__dirname,'../..', imageName);
             fs.unlinkSync(imagePath);
           }
         }
@@ -35,7 +35,7 @@ const updateProducts = async (req, res) => {
         // first delete uploaded images 
         if (req.files && req.files.length > 0) {
           for(let image of req.files){
-            const imagePath = path.join(__dirname,'..', image.path);
+            const imagePath = path.join(__dirname,'../..', image.path);
             fs.unlinkSync(imagePath);
           }
         }
@@ -103,9 +103,11 @@ const updateProducts = async (req, res) => {
       // deleting images from backend
       if(delImages){
         for(let imageName of delImages){
-          const imagePath = path.join(__dirname,'..', imageName);
-          fs.unlinkSync(imagePath);
-          findProd.images = findProd.images?.filter((img) => {return img !== imageName});
+          if(imageName !== null){
+            const imagePath = path.join(__dirname,'../..', imageName);
+            fs.unlinkSync(imagePath);
+            findProd.images = findProd.images?.filter((img) => {return img !== imageName});
+          }
         }
       }
   
