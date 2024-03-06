@@ -24,6 +24,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// making upload/ folder public so that I can fetch that images
+app.use('/public', express.static(path.join(__dirname, 'public')));
+
 
 
 // --------------------------- Routing setup -------------------------------
