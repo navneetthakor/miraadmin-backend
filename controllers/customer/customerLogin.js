@@ -15,6 +15,7 @@ const customerLogin = async (req,res)=>{
     // check validation of parameters provided body 
     const err = validationResult(req);
     if(!err.isEmpty()){
+        console.log(req.body);
         return res.status(400).json({error: err.array(), signal: "red"});
     }
 
@@ -38,8 +39,8 @@ const customerLogin = async (req,res)=>{
         }
     }
     const jwt_secret = "tonystarkismyrolemodel";
-    const authtoken = jwt.sign(data,jwt_secret);
-    res.json({authtoken: authtoken, signal: "green"});
+    const custmrtoken = jwt.sign(data,jwt_secret);
+    res.json({custmrtoken: custmrtoken, signal: "green"});
 
     } catch (error) {
     console.log(error);
