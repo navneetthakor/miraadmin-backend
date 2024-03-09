@@ -16,7 +16,7 @@ const addToCart = async(req,res) =>{
         }
         
         // check whether customer exists or not 
-        const custmr = await Customer.findById(req.body.customer_id);
+        const custmr = await Customer.findById(req.custmr.id);
         if(!custmr){
             return res.status(401).json({message: "customer not exists", signal: "red"});
         }
@@ -29,7 +29,7 @@ const addToCart = async(req,res) =>{
         
         // now product and customer both exists 
         // so it's safe to add product to customers cart 
-        const cart = await Cart.find({customer_id: req.body.customer_id});
+        const cart = await Cart.find({customer_id: req.custmr.id});
 
         // crearing new iteam 
         const newIteam = {

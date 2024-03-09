@@ -13,6 +13,7 @@ const bcrypt = require('bcryptjs');
 // to delete image 
 const fs = require('fs');
 const path = require('path');
+const Cart = require('../../models/Cart');
 
 const createCustomer = async (req,res)=>{
     try{
@@ -46,6 +47,14 @@ const createCustomer = async (req,res)=>{
         mobile: req.mobile? req.mobile : ""
     })
     temp.save();
+
+    // creating cart for customer 
+    const cart = new Cart({
+        customer_id: temp._id,
+        cart_prods: [],
+        fav_prods: [],
+    })
+    cart.save();
 
     // jsonwebtoken related 
     // to provide authentication token back to custmr 

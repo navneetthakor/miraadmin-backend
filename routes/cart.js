@@ -12,6 +12,7 @@ const addToFav = require('../controllers/cart/addToFav');
 const deleteToCart = require('../controllers/cart/deleteToCart');
 const deleteToFav = require('../controllers/cart/deleteToFav');
 const getCart = require('../controllers/cart/getCart');
+const fetchCustomer = require('../middlewares/fetchCustomer');
 
 // ----------------Route:1 (creation of cart for user - when new user is created)------------------- 
 router.post('/createCart',
@@ -22,8 +23,8 @@ createCart);
 
 // ----------------Route:2 (add one product to Cart)---------------
 router.post('/addToCart',
+fetchCustomer,
 [
-    body("customer_id", "please add product id").not().isEmpty(),
     body("product_id", "please add product id").not().isEmpty(),
     body("quantity", "please add product id").isNumeric()
 ],
@@ -31,8 +32,8 @@ addToCart);
 
 // ----------------Route:3 (add one entry to fav)---------------
 router.post('/addToFav',
+fetchCustomer,
 [
-    body("customer_id", "please add product id").not().isEmpty(),
     body("product_id", "please add product id").not().isEmpty(),
     body("quantity", "please add product id").isNumeric()
 ],
@@ -40,25 +41,23 @@ addToFav);
 
 // -----------------Route:4 (remove One provided Entry from Cart)-------
 router.delete('/deleteToCart',
+fetchCustomer,
 [
-    body("customer_id", "please provide Customer Id").not().isEmpty(),
     body("product_id", "please add product id").not().isEmpty(),
 ],
 deleteToCart)
 
 // -----------------Route:5 (remove one provided entry from Cart)--------
 router.delete('/deleteToFav',
+fetchCustomer,
 [
-    body("customer_id", "please provide Customer Id").not().isEmpty(),
     body("product_id", "please add product id").not().isEmpty(),
 ],
 deleteToFav)
 
 // -----------------Route:6 (get Cart)---------------------------
 router.post('/getCart',
-[
-    body("customer_id", "please provide Customer Id").not().isEmpty()
-],
+fetchCustomer,
 getCart);
 
 module.exports = router;

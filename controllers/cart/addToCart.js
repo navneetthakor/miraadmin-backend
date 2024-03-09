@@ -6,11 +6,14 @@ const Product = require('../../models/Product');
 // to validate body 
 const {validationResult} = require('express-validator');
 
-// to create Object id 
-const { mongoose } = require('mongoose');
 
 const addToCart = async(req,res) =>{
     try{
+
+        // check whether id got or not 
+        if(req.custmr.id === undefined || req.custmr.id === null) {
+            return res.status(401).json({error: "custmrtoken is not available, please login again" , signal: "red"});
+        }
 
         // check whether body is appropriate or not 
         const validErro = validationResult(req);
@@ -19,7 +22,7 @@ const addToCart = async(req,res) =>{
         }
         
         // check whether customer exists or not 
-        const custmr = await Customer.findById(req.body.customer_id);
+        const custmr = await Customer.findById(req.custmr.id);
         if(!custmr){
             return res.status(401).json({message: "customer not exists", signal: "red"});
         }
@@ -32,7 +35,7 @@ const addToCart = async(req,res) =>{
         
         // now product and customer both exists 
         // so it's safe to add iteam to customers cart 
-        const cart = await Cart.find({customer_id: req.body.customer_id});
+        const cart = await Cart.find({customer_id: req.custmr.id});
 
         // crearing new iteam 
         const newIteam = {

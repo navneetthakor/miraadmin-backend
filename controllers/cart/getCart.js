@@ -2,26 +2,21 @@
 const Cart = require('../../models/Cart');
 const Customer = require('../../models/Customer');
 
-// to validate parameters provided in body 
-const {validationResult} = require('express-validator');
-
 const getCart = async(req,res) =>{
     try{
-
-        // check whether all parameters are appropriate in body or not 
-        const validError = validationResult(req);
-        if(!validError.isEmpty()){
-            return res.status(401).json({error: validError.array(), signal: "red"});
+        // check whether id got or not 
+        if(req.custmr.id === undefined || req.custmr.id === null) {
+            return res.status(401).json({error: "custmrtoken is not available, please login again" , signal: "red"});
         }
         
         // now check whether custmr exists or not 
-        const custmr = await Customer.findById(req.body.customer_id);
+        const custmr = await Customer.findById(req.custmr.id);
         if(!custmr){
             return res.status(401).json({error: "user doesn't exists", signal: "red"});
         }
         
         // now all set to return cart 
-        const cart = await Cart.findOne({customer_id: req.body.customer_id});
+        const cart = await Cart.findOne({customer_id: req.custmr.id});
         
         return res.json({cart: cart, signal: "green"});
     }
