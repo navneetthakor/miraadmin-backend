@@ -1,6 +1,7 @@
 // to connect with collection 
 const Cart = require('../../models/Cart');
 const Customer = require('../../models/Customer');
+const Product = require('../../models/Product');
 
 const getCart = async(req,res) =>{
     try{
@@ -17,8 +18,27 @@ const getCart = async(req,res) =>{
         
         // now all set to return cart 
         const cart = await Cart.findOne({customer_id: req.custmr.id});
-        
-        return res.json({cart: cart, signal: "green"});
+
+        // fetch all the products and set it in object 
+        let ansObj = {
+            cart_prods: [],
+            fav_prods: []
+        };
+
+        for(let i of cart.cart_prods){
+            let prod = await Product.findById(i.product_id);
+            console.log(prod);
+            prod = {prod, ct: i.quantity};
+            ansObj.cart_prods.push(prod);
+        }
+        for(let i of cart.fav_prods){
+            let prod = await Product.findById(i.product_id);
+            prod.ct = i.quantity;
+            ansObj.fav_prods.push(prod);
+        }
+
+        console.log(ansObj);
+        return res.json({cart: ansObj, signal: "green"});
     }
     catch(e){
         console.log(e);
