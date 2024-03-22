@@ -13,13 +13,16 @@ const createOrder = require('../controllers/order/createOrder');
 const fetchAllOrders = require('../controllers/order/fetchAllOrders');
 const fetchCustomerOrders = require('../controllers/order/fetchCustomerOrders');
 const fetchSingleOrder = require('../controllers/order/fetchSingleOrder');
+const fetchCustomer = require('../middlewares/fetchCustomer');
 
 // ------------ROUTE:1 (creating order )-----------------
-router.post('/createOrder',
+router.post('/order',
+fetchCustomer,
 [
     body("products", "please provide products").isArray(),
-    body("customer_id", "please provide customer id").not().isEmpty(),
     body("address", "please provide customer id").not().isEmpty(),
+    body("mobile", "please provide valid mobile number").not().isEmpty(),
+    body("email", "please provide valid email").isEmail(),
     body("amount", "enter amount").isNumeric(),
     body("method", "provide method").not().isEmpty(),
 ],

@@ -11,6 +11,7 @@ const axios = require('axios');
 const createOrder = async (req,res,) => {
     try{
 
+        console.log("---------------------1st step complete---------------------")
         // varify body parameters 
         const validError = validationResult(req);
         if(!validError.isEmpty()){
@@ -18,7 +19,7 @@ const createOrder = async (req,res,) => {
         }
         
         // check whether customer exists or not 
-        const custmr = await Customer.findById(req.body.customer_id);
+        const custmr = await Customer.findById(req.custmr.id);
         if(!custmr){
             return res.status(400).json({error: "customer not exists", signal: "red"});
         }
@@ -26,9 +27,9 @@ const createOrder = async (req,res,) => {
         // creating payment
         const url = 'http://localhost:5001/payment/createPayment';
         const data = {
-            customer_id : req.body.customer_id,
+            customer_id : custmr._id,
             method: req.body.method,
-            paymentIntentObj: req.body.paymentIntentObj ? req.body.paymentIntentObj : "",
+            session_id: req.body.method === "cod"? "" : req.body.session_id,
             country: req.body.address.country,
             amount: req.body.amount
         }
@@ -39,15 +40,20 @@ const createOrder = async (req,res,) => {
         if(payment.signal === "red"){
             console.log(payment);
             //---email to admin---
+            //try to write logic for order creation in  try-catch block so that at least session is created and 
+            // porvided back to user 
             return res.status(400).json({error: "error occure during creating payment", signal: "red"});
         }
         
-        // now create order 
+        console.log("---------------------2st step complete---------------------")
+        // now create order
         const order = new Order({
-            customer_id: req.body.customer_id,
+            customer_id: custmr._id,
             products : req.body.products,
             address: req.body.address,
-            payment_id: payment.payment._id
+            payment_id: payment.payment._id,
+            mobile: req.body.mobile,
+            email: req.body.email
         })
         order.save();
 
@@ -72,7 +78,7 @@ const createOrder = async (req,res,) => {
     }catch(e){
         console.log(e);
         //---email to admin--
-        return res.status(500).json({error: "internal server error", signal: "red"});
+        return res.status(500).json({error: "internal server error order", signal: "red"});
     }
 }
 

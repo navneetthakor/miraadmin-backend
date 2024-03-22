@@ -7,6 +7,7 @@ const {validationResult} = require('express-validator');
 const createPayment = async(req,res) => {
     try{
 
+        console.log("2nd step complete")
         // check whether parameters are appropriate or not in body 
         const validError = validationResult(req);
         if(!validError.isEmpty()){
@@ -22,7 +23,6 @@ const createPayment = async(req,res) => {
                 customer_id: req.body.customer_id,
                 amount: req.body.amount,
                 method: "cod",
-                status: "pending",
                 country: req.body.country
             })
             
@@ -30,17 +30,12 @@ const createPayment = async(req,res) => {
             return res.json({payment: payDetails, signal: "green"});
         }
         
-        // else if payment is made thorough strip then 
-        if(!req.body.paymentIntentObj) {
-            return res.status(400).json({error:"Payment intent Object is not provided"});
-        }
-
+        // code reaches here means payment is made through stripe 
         const payDetails = new Payment({
             customer_id: req.body.customer_id,
             amount: req.body.amount,
-            payment_intent_id: req.body.paymentIntentObj.id,
-            method: req.body.paymentIntentObj.payment_method_details.type,
-            status: "completd",
+            session_id: req.body.session_id,
+            method: "stripe",
             country: req.body.country
         })
         
@@ -48,7 +43,7 @@ const createPayment = async(req,res) => {
         return res.json({payment: payDetails, signal: "green"});
     }catch(e){
         console.log(e);
-        return res.status(500).json({error: "Internal server error", signal: "red"});
+        return res.status(500).json({error: "Internal server error paymentcreate", signal: "red"});
     }
 }
 

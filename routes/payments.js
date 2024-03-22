@@ -20,7 +20,7 @@ const fetchAllPayment = require('../controllers/payment/fetchAllPayment');
 router.post('/createPayment',
 [
     body("customer_id", "provide valid customer id").not().isEmpty(),
-    body("amount", "provide numeric amount value").isNumeric(),
+    body("amount", "provide numeric amount value").not().isEmpty(),
     body("method","enter method of payment").not().isEmpty(),
     body("country","please provide country").not().isEmpty(),
 ],
@@ -29,9 +29,6 @@ createPayment)
 // ------------ROUTE:2 (update payment details)------------
 // ---Admin will perform this operation 
 router.put('/updatePayment',
-[
-    body("payment_id", "please provide valid payment id").not().isEmpty()
-],
 updatePayment);
 
 

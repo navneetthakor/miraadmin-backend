@@ -33,6 +33,7 @@ const customerRoutes = require("./routes/customer.js");
 const cartRoutes = require("./routes/cart.js");
 const ratingRoutes = require("./routes/ratings.js");
 const orderRoutes = require("./routes/order.js");
+const checkoutRoutes = require("./routes/checkout.js");
 
 // placing middlewares
 app.use("/payment", paymentRoutes);
@@ -42,46 +43,8 @@ app.use("/customer", customerRoutes);
 app.use("/cart", cartRoutes);
 app.use("/rating", ratingRoutes);
 app.use("/order", orderRoutes);
+app.use("/checkout", checkoutRoutes);
 
-// temporory route for checkout session id creation
-const stripe = require("stripe")(process.env.STRIPE_SECRET);
-app.post("/chekoutCompleted", async(req,res)=>{
-    // const {result} = req.body;
-    console.log(req.body);
-    return res.json({data: "ok"});
-})
-app.post("/checkoutSession", async (req, res) => {
-  const { products } = req.body;
-
-  const lineIteams = products?.map((prod) => {
-    const imagePath = `http://localhost:5001/${prod.prod.images[0]}`.replace(
-      /\\/g,
-      "/"
-    );
-    return {
-      price_data: {
-        currency: "USD",
-        product_data: {
-          name: prod.prod.title,
-          images: [imagePath],
-        },
-        // unit_amount:
-        unit_amount: Math.round(prod.prod.sellprice * 100),
-      },
-      quantity: prod.ct,
-    };
-  });
-
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    line_items: lineIteams,
-    mode: "payment",
-    success_url: "http://localhost:3000/Success",
-    cancel_url: "http://localhost:3000/Cancel",
-  });
-
-  return res.json({ id: session.id });
-});
 
 // default routes
 

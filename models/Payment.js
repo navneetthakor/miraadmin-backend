@@ -16,7 +16,7 @@ const PaymentSchema = new Schema({
         type: Number,
         required: true
     },
-    payment_intent_id: {
+    session_id: {
         type: String,
     },
     method: {
@@ -26,6 +26,7 @@ const PaymentSchema = new Schema({
     status:{
         type: String,
         required: true,
+        default: "Pending"
     },
     country: {
         type: String,

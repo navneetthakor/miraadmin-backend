@@ -25,9 +25,25 @@ const OrderSchema = new Schema({
     status: {
         type: String,
         required: true,
-        default: "confirm"
+        default: "Confirm"
+    },
+    mobile: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
     },
     address: {
+        first_name: {
+            type: String,
+            required: true
+        },
+        last_name: {
+            type: String,
+            required: true
+        },
         street: {
             type: String,
             required: true
