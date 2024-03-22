@@ -27,7 +27,6 @@ const getCart = async(req,res) =>{
 
         for(let i of cart.cart_prods){
             let prod = await Product.findById(i.product_id);
-            console.log(prod);
             prod = {prod, ct: i.quantity};
             ansObj.cart_prods.push(prod);
         }
@@ -37,7 +36,6 @@ const getCart = async(req,res) =>{
             ansObj.fav_prods.push(prod);
         }
 
-        console.log(ansObj);
         return res.json({cart: ansObj, signal: "green"});
     }
     catch(e){
