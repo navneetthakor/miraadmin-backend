@@ -10,8 +10,6 @@ const axios = require('axios');
 
 const createOrder = async (req,res,) => {
     try{
-
-        console.log("---------------------1st step complete---------------------")
         // varify body parameters 
         const validError = validationResult(req);
         if(!validError.isEmpty()){
@@ -45,7 +43,6 @@ const createOrder = async (req,res,) => {
             return res.status(400).json({error: "error occure during creating payment", signal: "red"});
         }
         
-        console.log("---------------------2st step complete---------------------")
         // now create order
         const order = new Order({
             customer_id: custmr._id,

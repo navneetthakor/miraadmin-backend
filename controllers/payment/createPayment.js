@@ -7,7 +7,6 @@ const {validationResult} = require('express-validator');
 const createPayment = async(req,res) => {
     try{
 
-        console.log("2nd step complete")
         // check whether parameters are appropriate or not in body 
         const validError = validationResult(req);
         if(!validError.isEmpty()){

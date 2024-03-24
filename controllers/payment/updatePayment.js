@@ -32,7 +32,7 @@ const updatePayment = async (req, res) => {
     
     // if code reaches here that means that payment made throud stripe and it's completed now 
       newPayment.session_id = session_id;
-      newPayment.status = "completed";
+      newPayment.status = req.body.status;
 
       const ans = await Payment.findOneAndUpdate(
         {session_id: session_id},

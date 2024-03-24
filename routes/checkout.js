@@ -42,7 +42,6 @@ router.post("/", async (req, res) => {
 
 
   //  ----------- creating order----------
-  console.log(req.header("custmrtoken"));
 //   formating product array 
 const prod = products?.map((prod) => {
     return({
@@ -71,6 +70,7 @@ const prod = products?.map((prod) => {
   } catch (e) {
     console.log(e);
     // -----email---to admin---
+    return res.status(500).json({error: "error occure while creating order", signal: "red"});
   }
 
   return res.json({
