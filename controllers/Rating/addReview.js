@@ -17,7 +17,7 @@ const addReview = async(req,res) => {
         //  retriving Rating document to reduce number of system call)
 
         // check whether customer exists or not 
-        const custmr = await Customer.findById(req.body.customer_id);
+        const custmr = await Customer.findById(req.custmr.id);
         if(!custmr){
             return res.status(401).json({error: "customer not exist", signal: "red"});
         }
@@ -31,11 +31,16 @@ const addReview = async(req,res) => {
         // check whether user already given review or not 
         let bol = false;
         if(rating.review.length > 0){
+            console.log("we entered");
             for(let i of rating.review){
-                if(i.customer_id.toString() === req.body.customer_id){
+                console.log(i);
+                console.log(custmr._id);
+                if(i.customer_id.toString() === custmr._id.toString()){
                     bol = true;
+                    console.log("it's duplicate");
                     break;
                 }
+                console.log("it's not!");
             }
         }
 
@@ -46,7 +51,7 @@ const addReview = async(req,res) => {
 
         // now all set to add review 
         const newIteam = {
-            customer_id: req.body.customer_id,
+            customer_id: custmr._id,
             rate: req.body.rate,
             desc: req.body.desc
         }

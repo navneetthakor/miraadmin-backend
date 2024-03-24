@@ -1,4 +1,5 @@
 // to connect with collections 
+const Customer = require('../../models/Customer');
 const Rating = require('../../models/Rating');
 
 // to check body parameters 
@@ -21,8 +22,20 @@ const getRating = async(req,res) => {
         if(!rating){
             return res.status(400).json({error:"product not exists", signal: "red"});
         }
+        let tempRating = [];
+
+        for(i in rating.review){
+            const custmr = await Customer.findById(rating.review[i].customer_id);
+            const temp = {
+                name: custmr.name,
+                rate: rating.review[i].rate,
+                customer_id: rating.review[i].customer_id,
+                desc: rating.review[i].desc,
+            }
+            tempRating.push(temp);
+        }
         
-        return res.json({rating:rating, signal: "green"});
+        return res.json({rating:tempRating, signal: "green"});
     }
     catch(e){
         console.log(e);

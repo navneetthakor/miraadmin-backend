@@ -18,7 +18,7 @@ const updateReview = async(req,res) => {
         //  retriving Rating document to reduce number of system call)
         
         // check whether customer exists or not 
-        const custmr = await Customer.findById(req.body.customer_id);
+        const custmr = await Customer.findById(req.custmr.id);
         if(!custmr){
             return res.status(401).json({error: "customer not exist", signal: "red"});
         }
@@ -33,7 +33,7 @@ const updateReview = async(req,res) => {
         let bol = true;
         if(rating.review.length> 0){
             for(let i of rating.review){
-                if(i.customer_id.toString() === req.body.customer_id){
+                if(i.customer_id.toString() === custmr._id.toString()){
                     i.rate = req.body.rate;
                     i.desc = req.body.desc;
                     bol = false;

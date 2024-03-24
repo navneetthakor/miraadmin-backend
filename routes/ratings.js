@@ -5,12 +5,16 @@ const router = express.Router();
 // to validate body of request 
 const {body} = require('express-validator');
 
+// middlewares
+const fetchCustomer = require('../middlewares/fetchCustomer.js');
+
 // importing controllers 
 const createRating = require('../controllers/Rating/createRating.js');
 const addReview = require('../controllers/Rating/addReview.js');
 const updateReview = require('../controllers/Rating/updateReview.js');
 const deleteRating = require('../controllers/Rating/deleteRating.js');
 const getRating = require('../controllers/Rating/getRating.js')
+
 // ----------------Route:1 (create Rating document - when product is added)----------------
 router.post('/createRating',
 [
@@ -20,8 +24,8 @@ createRating);
 
 // -----------------Route:2 (to add brand new Review )-----------------
 router.put('/addReview',
+fetchCustomer,
 [
-    body("customer_id", "please enter valid customer id").not().isEmpty(),
     body("product_id", "please enter valid product id").not().isEmpty(),
     body("rate", "please enter valid numeric value").isNumeric(),
     body("desc", "please enter description").not().isEmpty(),
@@ -30,8 +34,8 @@ addReview);
 
 // ----------------Route:3 (to update old review)-------- 
 router.put('/updateReview',
+fetchCustomer,
 [
-    body("customer_id", "please enter valid customer id").not().isEmpty(),
     body("product_id", "please enter valid product id").not().isEmpty(),
     body("rate", "please enter valid numeric value").isNumeric(),
     body("desc", "please enter description").not().isEmpty(),
