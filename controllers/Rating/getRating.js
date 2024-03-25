@@ -22,20 +22,26 @@ const getRating = async(req,res) => {
         if(!rating){
             return res.status(400).json({error:"product not exists", signal: "red"});
         }
-        let tempRating = [];
 
-        for(i in rating.review){
-            const custmr = await Customer.findById(rating.review[i].customer_id);
-            const temp = {
-                name: custmr.name,
-                rate: rating.review[i].rate,
-                customer_id: rating.review[i].customer_id,
-                desc: rating.review[i].desc,
-            }
-            tempRating.push(temp);
-        }
+        // fetching all customers 
+        const custmrPromise = rating.review?.map(async (i) => {
+            const custmr = await Customer.findById(i.customer_id);
+            return custmr;
+        })
+        const custmrs = await Promise.all(custmrPromise);
+
+        // creating result to be sent 
+        const result = rating.review?.map((rating, index) => {
+            return {
+                name: custmrs[index].name,
+                image: custmrs[index].image,
+                rate: rating.rate,
+                customer_id: rating.customer_id,
+                desc: rating.desc,
+            };
+        });
         
-        return res.json({rating:tempRating, signal: "green"});
+        return res.json({rating:result, signal: "green"});
     }
     catch(e){
         console.log(e);

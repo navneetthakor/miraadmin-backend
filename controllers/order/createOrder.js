@@ -62,9 +62,10 @@ const createOrder = async (req,res,) => {
         }
         const response2 = await axios.put(url2, data2)
         const payment2 = response2.data;
+        console.log(payment2);
         
         // if something goes rong in payment route 
-        if(payment2.payment.signal === "red"){
+        if(payment2.signal === "red"){
             //---email to admin---
             return res.status(400).json({error: "error occure during updating payment", signal: "red"});
         }

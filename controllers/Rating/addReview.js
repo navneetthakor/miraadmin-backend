@@ -31,16 +31,13 @@ const addReview = async(req,res) => {
         // check whether user already given review or not 
         let bol = false;
         if(rating.review.length > 0){
-            console.log("we entered");
             for(let i of rating.review){
                 console.log(i);
                 console.log(custmr._id);
                 if(i.customer_id.toString() === custmr._id.toString()){
                     bol = true;
-                    console.log("it's duplicate");
                     break;
                 }
-                console.log("it's not!");
             }
         }
 

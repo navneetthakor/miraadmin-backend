@@ -32,7 +32,7 @@ const getCart = async(req,res) =>{
         }
         for(let i of cart.fav_prods){
             let prod = await Product.findById(i.product_id);
-            prod.ct = i.quantity;
+            prod = {prod, ct: i.quantity};
             ansObj.fav_prods.push(prod);
         }
 
