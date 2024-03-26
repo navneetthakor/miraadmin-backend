@@ -10,16 +10,16 @@ const fetchAllCustomers = async (req,res)=>{
     
         // check whether such admin exsists or not 
         const admin = await Admin.findById(adminId);
-        if(!admin) res.status(400).json({message: "You are not admin", signal: "red"});
+        if(!admin) return res.status(400).json({message: "You are not admin", signal: "red"});
     
         // now fetch all customers and send them to front-end 
         const customers = await Customer.find();
-        res.json(customers);
+        return res.json(customers);
         // res.json({customers: customers, signal: "green"});
     }
     catch(e){
         console.log(e);
-        res.status(500).json({message: "internal server error", signal: "red"});
+        return res.status(500).json({message: "internal server error", signal: "red"});
     }
 };
 

@@ -67,8 +67,8 @@ const addProduct = async (req, res) => {
           sellprice: req.body.sellprice,
           category: req.body.category,
           sku: req.body.sku,
-          stock: req.body.prodname,
-          soldstock: req.body.prodname
+          stock: req.body.stock,
+          soldstock: req.body.soldstock,
         });
       temp.save();
 

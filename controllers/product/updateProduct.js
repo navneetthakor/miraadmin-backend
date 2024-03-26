@@ -55,7 +55,6 @@ const updateProducts = async (req, res) => {
         mrp,
         sellprice,
         category,
-        sku,
         stock,
         soldstock,
       delImages} = req.body;
@@ -74,16 +73,13 @@ const updateProducts = async (req, res) => {
         prod.mrp = mrp;
       }
       if (category) {
-        prod.category = totrating;
+        prod.category = category;
       }
       if (company) {
         prod.company = company;
       }
       if (sellprice) {
         prod.sellprice = sellprice;
-      }
-      if (sku) {
-        prod.sku = sku;
       }
       if (weight) {
         prod.weight = weight;
