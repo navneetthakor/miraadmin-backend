@@ -14,7 +14,7 @@ const fetchAllOrders = require('../controllers/order/fetchAllOrders');
 const fetchCustomerOrders = require('../controllers/order/fetchCustomerOrders');
 const fetchSingleOrder = require('../controllers/order/fetchSingleOrder');
 const fetchCustomer = require('../middlewares/fetchCustomer');
-
+const updateOrder = require('../controllers/order/updateOrder')
 // ------------ROUTE:1 (creating order )-----------------
 router.post('/order',
 fetchCustomer,
@@ -27,6 +27,14 @@ fetchCustomer,
     body("method", "provide method").not().isEmpty(),
 ],
 createOrder);
+// ------------ROUTE:2 (update order )-----------------
+router.put('/updateOrder',
+fetchAdmin,
+[
+    body("order_id", "please provide order_id").not().isEmpty(),
+    body("status", "provide status").not().isEmpty(),
+],
+updateOrder);
 
 // ----------ROUTE:2 (fetch all orders)----------------
 // ----------Only admin can perform this operation

@@ -1,4 +1,5 @@
 // to connect with payment collection
+const Order = require("../../models/Order");
 const Payment = require("../../models/Payment");
 
 
@@ -19,8 +20,19 @@ const updatePayment = async (req, res) => {
       );
 
       return res.json({ payment: ans, signal: "green" });
-    } else if (payment_id) { //to mark cod payment as completed
-      newPayment.status = "Completed";
+    } else if (payment_id) { //to mark payment status by using admin panel
+      const oldPayment = await Payment.findById(payment_id);
+
+      if(req.body.status === 'Cancelled') {
+        if(oldPayment.status === 'Completed') newPayment.status = 'Send-Back';
+        else newPayment.status = 'Cancelled'
+      }
+      else if(req.body.status === 'Returned'){
+        newPayment.status = 'Refunded';
+      }
+      else {
+        newPayment.status = req.body.status;
+      }
       const ans = await Payment.findByIdAndUpdate(
         payment_id,
         { $set: newPayment },
@@ -40,7 +52,18 @@ const updatePayment = async (req, res) => {
         { new: true }
       );
 
-      return res.json({ payment: ans, signal: "green" });
+    // if payment is cancelled through stripe session then
+    // correspoing order should also be cancelled 
+    let order = {};
+    if(req.body.status === 'Cancelled'){
+        order = await Order.findByIdAndUpdate(
+        ans.order_id,
+        {$set: {status: "Cancelled"}},
+        {new: true}
+        );
+    }
+
+      return res.json({ payment: ans, order: order, signal: "green" });
 
   } catch (e) {
     console.log(e);

@@ -30,7 +30,7 @@ const createCustomer = async (req,res)=>{
     let custmr = await Customer.findOne({email: req.body.email});
     if(custmr){
         // delete uploaded file 
-        if(req.file) fs.unlinkSync(path.join(__dirname,'..', req.file.path));
+        if(req.file) fs.unlinkSync(path.join(__dirname,'../..', req.file.path));
         return res.status(400).json({error: "custmr with given email already exists", signal: "red"});
     }
 
