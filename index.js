@@ -15,13 +15,14 @@ const port = process.env.PORT || 5001;
 
 // --------------------------- Middleware setup ----------------------------
 // to enable cross origin resource sharing
-app.use(cors(
-  {
-    origin: ["https://igadget-version-2.vercel.app"],
-    methods: ["POST","GET","PUT","DELETE"],
-    credentials: true
-  }
-));
+// app.use(cors(
+//   {
+//     origin: ["https://igadget-version-2.vercel.app"],
+//     methods: ["POST","GET","PUT","DELETE"],
+//     credentials: true
+//   }
+// ));
+app.use(cors());
 
 // to parse the body of request (specifically for post requests)
 app.use(express.json());
