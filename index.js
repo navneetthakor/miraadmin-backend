@@ -17,7 +17,7 @@ const port = process.env.PORT || 5001;
 // to enable cross origin resource sharing
 app.use(cors(
   {
-    origin: ["https://igadget-app.vercel.app/"],
+    origin: ["https://igadget-version-2.vercel.app"],
     methods: ["POST","GET","PUT","DELETE"],
     credentials: true
   }
