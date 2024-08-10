@@ -50,7 +50,7 @@ const prod = products?.map((prod) => {
     })
 })
   try {
-    const url = "https://igadget-version-2.vercel.com/order/order";
+    const url = "https://miraadmin-backend.vercel.app/order/order";
     const data = {
       products: prod,
       method: req.body.method,
