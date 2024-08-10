@@ -25,7 +25,7 @@ const createOrder = async (req,res,) => {
         // creating payment
         const url = `http://${process.env.BACKEND_URL}/payment/createPayment`;
         const data = {
-            customer_id : custmr._id,
+            customer_id : req.custmr._id,
             method: req.body.method,
             session_id: req.body.method === "cod"? "" : req.body.session_id,
             country: req.body.address.country,
@@ -45,7 +45,7 @@ const createOrder = async (req,res,) => {
         
         // now create order
         const order = new Order({
-            customer_id: custmr._id,
+            customer_id: req.custmr._id,
             products : req.body.products,
             address: req.body.address,
             payment_id: payment.payment._id,
