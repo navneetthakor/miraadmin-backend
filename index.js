@@ -55,7 +55,7 @@ app.use("/checkout", checkoutRoutes);
 
 // default routes
 
-app.get("/", (req, res) => res.json({ signal: "green" }));
+app.get("/", (req, res) => res.json({ signal: "true" }));
 
 // -------------------------- Starting backend -----------------------------
 app.listen(port, () => {
