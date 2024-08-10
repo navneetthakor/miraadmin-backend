@@ -16,11 +16,11 @@ const createOrder = async (req,res,) => {
             return res.status(400).json({error: validError.array(), signal: "red"});
         }
         
-        // check whether customer exists or not (temporory commented because vercel getting error over here)
-        // const custmr = await Customer.findById(req.custmr.id);
-        // if(!custmr){
-        //     return res.status(400).json({error: "customer not exists", signal: "red"});
-        // }
+        // check whether customer exists or not
+        const custmr = await Customer.findById(req.custmr.id);
+        if(!custmr){
+            return res.status(400).json({error: "customer not exists", signal: "red"});
+        }
         
         // creating payment
         const url = `http://${process.env.BACKEND_URL}/payment/createPayment`;
