@@ -13,7 +13,7 @@ router.post("/", async (req, res) => {
   let session;
   if (req.body.method !== "cod") {
     const lineIteams = products?.map((prod) => {
-      const imagePath = `http://localhost:5001/${prod.prod.images[0]}`.replace(
+      const imagePath = `https://miraadmin-backend.vercel.app/${prod.prod.images[0]}`.replace(
         /\\/g,
         "/"
       );
@@ -35,8 +35,8 @@ router.post("/", async (req, res) => {
       payment_method_types: ["card"],
       line_items: lineIteams,
       mode: "payment",
-      success_url: "http://localhost:3000/Success",
-      cancel_url: "http://localhost:3000/Cancel",
+      success_url: "https://igadget-version-2.vercel.com/Success",
+      cancel_url: "https://igadget-version-2.vercel.com/Cancel",
     });
   }
 
@@ -50,7 +50,7 @@ const prod = products?.map((prod) => {
     })
 })
   try {
-    const url = "http://localhost:5001/order/order";
+    const url = "https://igadget-version-2.vercel.com/order/order";
     const data = {
       products: prod,
       method: req.body.method,
