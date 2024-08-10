@@ -23,7 +23,7 @@ const createOrder = async (req,res,) => {
         }
         
         // creating payment
-        const url = 'http://localhost:5001/payment/createPayment';
+        const url = `http://${process.env.BACKEND_URL}/payment/createPayment`;
         const data = {
             customer_id : custmr._id,
             method: req.body.method,
